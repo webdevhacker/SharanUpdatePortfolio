@@ -6,7 +6,6 @@ import Skills from './components/Skills';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import Loader from './components/Loader';
-import RoamingRobot from './components/RoamingRobot';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -35,7 +34,6 @@ function App() {
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text transition-colors duration-300">
       {isLoading && <Loader onLoadingComplete={() => setIsLoading(false)} />}
       <CustomCursor />
-      <RoamingRobot />
       <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
       <main>
         <Hero />
