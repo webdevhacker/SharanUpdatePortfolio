@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, CalendarClock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ darkMode, toggleTheme }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isp, setIsp] = useState("Detecting ISP...");
   const [showFlag, setShowFlag] = useState(false);
 
   useEffect(() => {
@@ -23,17 +22,6 @@ const Navbar = ({ darkMode, toggleTheme }) => {
     return () => clearInterval(timer);
   }, []);
 
-  // ISP fetch effect
-  useEffect(() => {
-    fetch('https://ipapi.co/json/')
-      .then(res => res.json())
-      .then(data => {
-        if (data.org) setIsp(data.org);
-        else setIsp("Unknown ISP");
-      })
-      .catch(() => setIsp("Network Info Unavailable"));
-  }, []);
-
   const handleFlagClick = () => {
     setShowFlag(true);
     setTimeout(() => {
@@ -48,20 +36,66 @@ const Navbar = ({ darkMode, toggleTheme }) => {
     { name: 'Blog', href: 'https://blog.isharankumar.com', external: true },
   ];
 
+  const formattedDateTime = currentTime.toLocaleString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+
   return (
     <>
       <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-            ? 'bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800'
+            ? 'bg-white/90 dark:bg-dark-bg/90 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800'
             : 'bg-transparent'
           }`}
       >
+        {/* Top Header Bar */}
+        <div className={`w-full transition-all duration-300 ${isScrolled ? 'h-0 overflow-hidden opacity-0' : 'h-10 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 bg-[length:200%_auto] animate-gradient border-b border-white/10 shadow-inner'}`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between text-xs font-medium text-white tracking-wide">
+            <div className="flex items-center space-x-2">
+              <CalendarClock size={14} className="text-white/80" />
+              <span className="font-mono hidden sm:inline-block">
+                {currentTime.toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                <span className="mx-2 text-white/50">|</span>
+                {currentTime.toLocaleTimeString()}
+              </span>
+              <span className="font-mono sm:hidden">
+                {currentTime.toLocaleTimeString()}
+              </span>
+            </div>
+            
+            <div className="flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
+              <span className="italic text-white/90">with love</span>
+              <button 
+                onClick={handleFlagClick} 
+                className="w-5 h-3.5 flex flex-col shadow-[0_0_8px_rgba(255,255,255,0.4)] hover:scale-125 transition-transform ml-1 rounded-[1px] overflow-hidden"
+                title="View Flag"
+              >
+                <div className="w-full h-1/3 bg-[#FF9933]"></div>
+                <div className="w-full h-1/3 bg-white flex items-center justify-center">
+                  <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
+                </div>
+                <div className="w-full h-1/3 bg-[#138808]"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Navigation Bar */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            
+            {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
               <a href="#home" className="text-xl md:text-2xl font-bold gradient-text whitespace-nowrap">SHARAN KUMAR</a>
             </div>
 
+            {/* Right Side: Links & Theme */}
             <div className="hidden lg:flex items-center">
               <div className="flex items-center space-x-6">
                 {navLinks.map((link) => (
@@ -75,28 +109,6 @@ const Navbar = ({ darkMode, toggleTheme }) => {
                     {link.name}
                   </a>
                 ))}
-                
-                {/* Info & Flag Widget */}
-                <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800/80 px-4 py-2 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700 shadow-sm ml-4">
-                  <span className="text-slate-700 dark:text-slate-300 min-w-[70px] text-center">
-                    {currentTime.toLocaleTimeString([], { hour12: false })}
-                  </span>
-                  <span className="text-slate-400">|</span>
-                  <span className="text-slate-600 dark:text-slate-400 max-w-[120px] truncate" title={isp}>
-                    {isp}
-                  </span>
-                  <button 
-                    onClick={handleFlagClick} 
-                    className="w-6 h-4 flex flex-col shadow-sm hover:scale-110 transition-transform ml-2"
-                    title="View Flag"
-                  >
-                    <div className="w-full h-1/3 bg-[#FF9933]"></div>
-                    <div className="w-full h-1/3 bg-white flex items-center justify-center">
-                      <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
-                    </div>
-                    <div className="w-full h-1/3 bg-[#138808]"></div>
-                  </button>
-                </div>
 
                 <button
                   onClick={toggleTheme}
@@ -108,6 +120,7 @@ const Navbar = ({ darkMode, toggleTheme }) => {
               </div>
             </div>
 
+            {/* Mobile Menu Toggle */}
             <div className="lg:hidden flex items-center">
               <button
                 onClick={toggleTheme}
@@ -126,23 +139,10 @@ const Navbar = ({ darkMode, toggleTheme }) => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-slate-800">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {/* Mobile Info Widget */}
-              <div className="flex items-center justify-between px-3 py-2 text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-md mb-2">
-                 <span>{currentTime.toLocaleTimeString([], { hour12: false })}</span>
-                 <span className="truncate max-w-[150px]">{isp}</span>
-                 <button onClick={handleFlagClick} className="w-6 h-4 flex flex-col shadow-sm">
-                  <div className="w-full h-1/3 bg-[#FF9933]"></div>
-                  <div className="w-full h-1/3 bg-white flex items-center justify-center">
-                    <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
-                  </div>
-                  <div className="w-full h-1/3 bg-[#138808]"></div>
-                </button>
-              </div>
-              
               {navLinks.map((link) => (
                 <a
                   key={link.name}

@@ -39,6 +39,7 @@ export default {
       animation: {
         'blob': 'blob 7s infinite',
         'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+        'gradient': 'gradient 8s linear infinite',
       },
       keyframes: {
         blob: {
@@ -50,6 +51,16 @@ export default {
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        gradient: {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          }
         }
       }
     },
