@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ darkMode, toggleTheme }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [isp, setIsp] = useState("Detecting ISP...");
+  const [showFlag, setShowFlag] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,6 +17,30 @@ const Navbar = ({ darkMode, toggleTheme }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Clock effect
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // ISP fetch effect
+  useEffect(() => {
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.org) setIsp(data.org);
+        else setIsp("Unknown ISP");
+      })
+      .catch(() => setIsp("Network Info Unavailable"));
+  }, []);
+
+  const handleFlagClick = () => {
+    setShowFlag(true);
+    setTimeout(() => {
+      setShowFlag(false);
+    }, 5000);
+  };
+
   const navLinks = [
     { name: 'Home', href: '#home' },
     { name: 'Experience', href: '#experience' },
@@ -21,80 +49,183 @@ const Navbar = ({ darkMode, toggleTheme }) => {
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800'
-          : 'bg-transparent'
-        }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex-shrink-0">
-            <a href="#home" className="text-2xl font-bold gradient-text">SHARAN KUMAR</a>
-          </div>
+    <>
+      <header
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled
+            ? 'bg-white/80 dark:bg-dark-bg/80 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800'
+            : 'bg-transparent'
+          }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex-shrink-0 flex items-center">
+              <a href="#home" className="text-xl md:text-2xl font-bold gradient-text whitespace-nowrap">SHARAN KUMAR</a>
+            </div>
 
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-8">
+            <div className="hidden lg:flex items-center">
+              <div className="flex items-center space-x-6">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                    className="text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+                
+                {/* Info & Flag Widget */}
+                <div className="flex items-center space-x-3 bg-slate-100 dark:bg-slate-800/80 px-4 py-2 rounded-full text-xs font-mono border border-slate-200 dark:border-slate-700 shadow-sm ml-4">
+                  <span className="text-slate-700 dark:text-slate-300 min-w-[70px] text-center">
+                    {currentTime.toLocaleTimeString([], { hour12: false })}
+                  </span>
+                  <span className="text-slate-400">|</span>
+                  <span className="text-slate-600 dark:text-slate-400 max-w-[120px] truncate" title={isp}>
+                    {isp}
+                  </span>
+                  <button 
+                    onClick={handleFlagClick} 
+                    className="w-6 h-4 flex flex-col shadow-sm hover:scale-110 transition-transform ml-2"
+                    title="View Flag"
+                  >
+                    <div className="w-full h-1/3 bg-[#FF9933]"></div>
+                    <div className="w-full h-1/3 bg-white flex items-center justify-center">
+                      <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
+                    </div>
+                    <div className="w-full h-1/3 bg-[#138808]"></div>
+                  </button>
+                </div>
+
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors ml-2"
+                  aria-label="Toggle Dark Mode"
+                >
+                  {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="lg:hidden flex items-center">
+              <button
+                onClick={toggleTheme}
+                className="p-2 mr-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+              >
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-md text-slate-600 dark:text-slate-300"
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-slate-800">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              {/* Mobile Info Widget */}
+              <div className="flex items-center justify-between px-3 py-2 text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-md mb-2">
+                 <span>{currentTime.toLocaleTimeString([], { hour12: false })}</span>
+                 <span className="truncate max-w-[150px]">{isp}</span>
+                 <button onClick={handleFlagClick} className="w-6 h-4 flex flex-col shadow-sm">
+                  <div className="w-full h-1/3 bg-[#FF9933]"></div>
+                  <div className="w-full h-1/3 bg-white flex items-center justify-center">
+                    <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
+                  </div>
+                  <div className="w-full h-1/3 bg-[#138808]"></div>
+                </button>
+              </div>
+              
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  className="text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
                   {link.name}
                 </a>
               ))}
-
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                aria-label="Toggle Dark Mode"
-              >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
             </div>
           </div>
+        )}
+      </header>
 
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={toggleTheme}
-              className="p-2 mr-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+      {/* Full Screen Flag Popup */}
+      <AnimatePresence>
+        {showFlag && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 cursor-pointer"
+            onClick={() => setShowFlag(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, rotateX: 20 }}
+              animate={{ 
+                scale: 1, 
+                rotateX: [0, 5, -5, 0],
+                y: [0, -10, 10, 0]
+              }}
+              transition={{ 
+                duration: 0.5, 
+                rotateX: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-[0_0_60px_rgba(255,153,51,0.4)] border-4 border-white/20 flex flex-col"
+              onClick={(e) => e.stopPropagation()}
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md text-slate-600 dark:text-slate-300"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-dark-card border-b border-slate-200 dark:border-slate-800">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-base font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
+              <div className="w-full h-1/3 bg-[#FF9933] relative overflow-hidden">
+                 {/* Waving shadow effect */}
+                 <motion.div 
+                   animate={{ x: ["-100%", "100%"] }} 
+                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent skew-x-12"
+                 />
+              </div>
+              <div className="w-full h-1/3 bg-white flex items-center justify-center relative overflow-hidden">
+                <motion.div 
+                   animate={{ x: ["-100%", "100%"] }} 
+                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent skew-x-12 z-10"
+                 />
+                 <div className="h-[90%] aspect-square p-1 z-0">
+                    <motion.svg 
+                      viewBox="0 0 100 100" 
+                      className="w-full h-full text-[#000080]"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                    >
+                      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                      {Array.from({length: 24}).map((_, i) => (
+                        <line key={i} x1="50" y1="50" x2="50" y2="5" stroke="currentColor" strokeWidth="1" transform={`rotate(${i * 15} 50 50)`} />
+                      ))}
+                      <circle cx="50" cy="50" r="8" fill="currentColor" />
+                    </motion.svg>
+                 </div>
+              </div>
+              <div className="w-full h-1/3 bg-[#138808] relative overflow-hidden">
+                 <motion.div 
+                   animate={{ x: ["-100%", "100%"] }} 
+                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-transparent skew-x-12"
+                 />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
