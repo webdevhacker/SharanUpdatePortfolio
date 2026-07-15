@@ -30,7 +30,6 @@ const Navbar = ({ darkMode, toggleTheme }) => {
   };
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
     { name: 'Experience', href: '#experience' },
     { name: 'Skills', href: '#skills' },
     { name: 'Blog', href: 'https://blog.isharankumar.com', external: true },
@@ -106,7 +105,7 @@ const Navbar = ({ darkMode, toggleTheme }) => {
             
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <a href="#home" className="text-xl md:text-2xl font-bold gradient-text whitespace-nowrap">SHARAN KUMAR</a>
+              <a href="/" onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); window.location.reload(); }} className="text-xl md:text-2xl font-bold gradient-text whitespace-nowrap cursor-pointer hover:opacity-80 transition-opacity">SHARAN KUMAR</a>
             </div>
 
             {/* Right Side: Links & Theme */}

@@ -33,7 +33,9 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0 text-center md:text-left">
-            <h2 className="text-2xl font-bold gradient-text mb-2">SHARAN KUMAR</h2>
+            <a href="/" onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); window.location.reload(); }} className="inline-block text-2xl font-bold gradient-text mb-2 cursor-pointer hover:opacity-80 transition-opacity">
+              SHARAN KUMAR
+            </a>
             <p className="text-slate-500 dark:text-slate-400 text-sm">
               Building responsive and dynamic web applications.
             </p>

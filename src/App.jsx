@@ -6,6 +6,8 @@ import Skills from './components/Skills';
 import Footer from './components/Footer';
 import CustomCursor from './components/CustomCursor';
 import Loader from './components/Loader';
+import BackToTop from './components/BackToTop';
+import TopProgressBar from './components/TopProgressBar';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -32,6 +34,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text transition-colors duration-300">
+      <TopProgressBar />
       {isLoading && <Loader onLoadingComplete={() => setIsLoading(false)} />}
       <CustomCursor />
       <Navbar darkMode={darkMode} toggleTheme={toggleTheme} />
@@ -41,6 +44,7 @@ function App() {
         <Skills />
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 }
