@@ -196,7 +196,7 @@ const Navbar = ({ darkMode, toggleTheme }) => {
                   rotateX: { duration: 3, repeat: Infinity, ease: "easeInOut" },
                   y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="w-full max-w-4xl aspect-video rounded-lg overflow-hidden shadow-[0_0_60px_rgba(255,153,51,0.4)] border-4 border-white/20 flex flex-col"
+                className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-[0_0_60px_rgba(255,153,51,0.4)] border-4 border-white/20 flex flex-col"
               >
                 <div className="w-full h-1/3 bg-[#FF9933] relative overflow-hidden">
                    {/* Waving shadow effect */}
@@ -240,8 +240,8 @@ const Navbar = ({ darkMode, toggleTheme }) => {
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-                className="mt-8 md:mt-12 text-4xl md:text-7xl font-black uppercase tracking-[0.2em]"
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="mt-8 md:mt-12 text-5xl md:text-7xl font-black uppercase tracking-[0.2em]"
                 style={{
                   background: 'linear-gradient(to bottom, #FF9933 0%, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #138808 66%, #138808 100%)',
                   WebkitBackgroundClip: 'text',
