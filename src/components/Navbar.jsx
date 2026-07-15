@@ -70,15 +70,19 @@ const Navbar = ({ darkMode, toggleTheme }) => {
                 {currentTime.toLocaleTimeString()}
               </span>
             </div>
-            
-            <div className="flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
-              <span className="italic text-white/90">with love</span>
-              <motion.button 
-                onClick={handleFlagClick} 
-                className="w-6 h-4 flex flex-col shadow-sm ml-2 origin-left rounded-[1px] overflow-hidden"
+            <div 
+              className="relative flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20 cursor-pointer hover:bg-white/20 transition-all hover:scale-105 group"
+              onClick={handleFlagClick}
+              title="Click to view flag"
+            >
+              {/* Pulsing ring for attraction */}
+              <div className="absolute inset-0 rounded-full border border-white/50 animate-[ping_3s_ease-in-out_infinite] opacity-50"></div>
+              
+              <span className="italic text-white/90 group-hover:text-white relative z-10">with love</span>
+              <motion.div 
+                className="w-6 h-4 flex flex-col shadow-sm ml-1 origin-left rounded-[1px] overflow-hidden relative z-10 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-shadow"
                 animate={{ skewY: [0, -1, 0, 1, 0], scaleX: [1, 0.98, 1, 0.98, 1] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                title="View Flag"
               >
                 <div className="w-full h-1/3 bg-[#FF9933]"></div>
                 <div className="w-full h-1/3 bg-white flex items-center justify-center py-[1px]">
@@ -91,7 +95,7 @@ const Navbar = ({ darkMode, toggleTheme }) => {
                   </svg>
                 </div>
                 <div className="w-full h-1/3 bg-[#138808]"></div>
-              </motion.button>
+              </motion.div>
             </div>
           </div>
         </div>
