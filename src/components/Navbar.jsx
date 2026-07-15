@@ -57,31 +57,41 @@ const Navbar = ({ darkMode, toggleTheme }) => {
         {/* Top Header Bar */}
         <div className={`w-full transition-all duration-300 ${isScrolled ? 'h-0 overflow-hidden opacity-0' : 'h-10 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 bg-[length:200%_auto] animate-gradient border-b border-white/10 shadow-inner'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between text-xs font-medium text-white tracking-wide">
-            <div className="flex items-center space-x-2">
-              <CalendarClock size={14} className="text-white/80" />
-              <span className="font-mono hidden sm:inline-block">
+            <div className="flex items-center space-x-1.5 md:space-x-2 truncate">
+              <CalendarClock size={14} className="text-white/80 shrink-0" />
+              <span className="font-mono hidden md:inline-block whitespace-nowrap">
                 {currentTime.toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                 <span className="mx-2 text-white/50">|</span>
                 {currentTime.toLocaleTimeString()}
               </span>
-              <span className="font-mono sm:hidden">
+              <span className="font-mono text-[10px] md:hidden whitespace-nowrap tracking-tighter">
+                {currentTime.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: '2-digit' })}
+                <span className="mx-1 text-white/50">|</span>
                 {currentTime.toLocaleTimeString()}
               </span>
             </div>
             
             <div className="flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
               <span className="italic text-white/90">with love</span>
-              <button 
+              <motion.button 
                 onClick={handleFlagClick} 
-                className="w-5 h-3.5 flex flex-col shadow-[0_0_8px_rgba(255,255,255,0.4)] hover:scale-125 transition-transform ml-1 rounded-[1px] overflow-hidden"
+                className="w-6 h-4 flex flex-col shadow-sm ml-2 origin-left rounded-[1px] overflow-hidden"
+                animate={{ skewY: [0, -1, 0, 1, 0], scaleX: [1, 0.98, 1, 0.98, 1] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 title="View Flag"
               >
                 <div className="w-full h-1/3 bg-[#FF9933]"></div>
-                <div className="w-full h-1/3 bg-white flex items-center justify-center">
-                  <div className="h-[80%] aspect-square rounded-full border-[0.5px] border-[#000080]"></div>
+                <div className="w-full h-1/3 bg-white flex items-center justify-center py-[1px]">
+                  <svg viewBox="0 0 100 100" className="w-full h-full text-[#000080]">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="8"/>
+                    {Array.from({length: 24}).map((_, i) => (
+                      <line key={i} x1="50" y1="50" x2="50" y2="5" stroke="currentColor" strokeWidth="6" transform={`rotate(${i * 15} 50 50)`} />
+                    ))}
+                    <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" strokeWidth="6" />
+                  </svg>
                 </div>
                 <div className="w-full h-1/3 bg-[#138808]"></div>
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -170,58 +180,74 @@ const Navbar = ({ darkMode, toggleTheme }) => {
             className="fixed inset-0 z-[1000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 md:p-12 cursor-pointer"
             onClick={() => setShowFlag(false)}
           >
-            <motion.div 
-              initial={{ scale: 0.8, rotateX: 20 }}
-              animate={{ 
-                scale: 1, 
-                rotateX: [0, 5, -5, 0],
-                y: [0, -10, 10, 0]
-              }}
-              transition={{ 
-                duration: 0.5, 
-                rotateX: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-                y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-              }}
-              className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-[0_0_60px_rgba(255,153,51,0.4)] border-4 border-white/20 flex flex-col"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-full h-1/3 bg-[#FF9933] relative overflow-hidden">
-                 {/* Waving shadow effect */}
-                 <motion.div 
-                   animate={{ x: ["-100%", "100%"] }} 
-                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent skew-x-12"
-                 />
-              </div>
-              <div className="w-full h-1/3 bg-white flex items-center justify-center relative overflow-hidden">
-                <motion.div 
-                   animate={{ x: ["-100%", "100%"] }} 
-                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent skew-x-12 z-10"
-                 />
-                 <div className="h-[90%] aspect-square p-1 z-0">
-                    <motion.svg 
-                      viewBox="0 0 100 100" 
-                      className="w-full h-full text-[#000080]"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    >
-                      <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-                      {Array.from({length: 24}).map((_, i) => (
-                        <line key={i} x1="50" y1="50" x2="50" y2="5" stroke="currentColor" strokeWidth="1" transform={`rotate(${i * 15} 50 50)`} />
-                      ))}
-                      <circle cx="50" cy="50" r="8" fill="currentColor" />
-                    </motion.svg>
-                 </div>
-              </div>
-              <div className="w-full h-1/3 bg-[#138808] relative overflow-hidden">
-                 <motion.div 
-                   animate={{ x: ["-100%", "100%"] }} 
-                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                   className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-transparent skew-x-12"
-                 />
-              </div>
-            </motion.div>
+            <div className="flex flex-col items-center justify-center w-full" onClick={(e) => e.stopPropagation()}>
+              <motion.div 
+                initial={{ scale: 0.8, rotateX: 20 }}
+                animate={{ 
+                  scale: 1, 
+                  rotateX: [0, 5, -5, 0],
+                  y: [0, -10, 10, 0]
+                }}
+                transition={{ 
+                  duration: 0.5, 
+                  rotateX: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                  y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="w-full max-w-4xl aspect-video rounded-lg overflow-hidden shadow-[0_0_60px_rgba(255,153,51,0.4)] border-4 border-white/20 flex flex-col"
+              >
+                <div className="w-full h-1/3 bg-[#FF9933] relative overflow-hidden">
+                   {/* Waving shadow effect */}
+                   <motion.div 
+                     animate={{ x: ["-100%", "100%"] }} 
+                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                     className="absolute inset-0 bg-gradient-to-r from-transparent via-black/10 to-transparent skew-x-12"
+                   />
+                </div>
+                <div className="w-full h-1/3 bg-white flex items-center justify-center relative overflow-hidden">
+                  <motion.div 
+                     animate={{ x: ["-100%", "100%"] }} 
+                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                     className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent skew-x-12 z-10"
+                   />
+                   <div className="h-[90%] aspect-square p-1 z-0">
+                      <motion.svg 
+                        viewBox="0 0 100 100" 
+                        className="w-full h-full text-[#000080]"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                      >
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                        {Array.from({length: 24}).map((_, i) => (
+                          <line key={i} x1="50" y1="50" x2="50" y2="5" stroke="currentColor" strokeWidth="1" transform={`rotate(${i * 15} 50 50)`} />
+                        ))}
+                        <circle cx="50" cy="50" r="8" fill="currentColor" />
+                      </motion.svg>
+                   </div>
+                </div>
+                <div className="w-full h-1/3 bg-[#138808] relative overflow-hidden">
+                   <motion.div 
+                     animate={{ x: ["-100%", "100%"] }} 
+                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                     className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-transparent skew-x-12"
+                   />
+                </div>
+              </motion.div>
+
+              {/* Jai Hind Text */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="mt-8 md:mt-12 text-4xl md:text-7xl font-black uppercase tracking-[0.2em]"
+                style={{
+                  background: 'linear-gradient(to bottom, #FF9933 0%, #FF9933 33%, #FFFFFF 33%, #FFFFFF 66%, #138808 66%, #138808 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Jai Hind
+              </motion.h1>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
